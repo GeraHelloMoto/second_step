@@ -15,6 +15,9 @@ jobs:
       - name: Install uv
         run: pip install uv
 
+      - name: Install dependencies (including ruff)
+        run: uv sync
+        
       - name: Run Ruff linter (PEP8)
         run: uv run ruff check .
 
