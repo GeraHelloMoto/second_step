@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from src.api import health, db_check
+from src.api import health, db_check, events, sync
 from src.database import engine
 from src.models import Base
 import logging
@@ -26,3 +26,5 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(health.router)
 app.include_router(db_check.router)
+app.include_router(events.router)
+app.include_router(sync.router)
