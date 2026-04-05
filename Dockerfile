@@ -1,8 +1,8 @@
 FROM python:3.12-slim
 
-# Создаём пользователя с домашней директорией
+
 RUN addgroup --system --gid 1000 appuser && \
-    adduser --system --uid 1000 --ingroup appuser --home /home/appuser appuser
+    adduser --system --uid 1000 --ingroup appuser appuser
 
 WORKDIR /app
 
@@ -11,23 +11,16 @@ COPY pyproject.toml uv.lock ./
 COPY src/ ./src/
 
 
-RUN chown -R appuser:appuser /app
-
-
 RUN pip install uv
 
 
-RUN mkdir -p /home/appuser/.cache/uv && chown -R appuser:appuser /home/appuser
+RUN uv sync --frozen --no-dev
+
+
+RUN chown -R appuser:appuser /app
 
 
 USER appuser
-
-
-ENV HOME=/home/appuser
-ENV UV_CACHE_DIR=/home/appuser/.cache/uv
-
-
-RUN uv sync --frozen --no-dev
 
 EXPOSE 8000
 
