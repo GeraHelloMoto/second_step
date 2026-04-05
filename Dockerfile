@@ -20,6 +20,10 @@ RUN pip install uv
 USER appuser
 
 
+ENV HOME=/home/appuser
+RUN mkdir -p $HOME/.cache/uv
+
+
 RUN uv sync --frozen --no-dev
 
 EXPOSE 8000
