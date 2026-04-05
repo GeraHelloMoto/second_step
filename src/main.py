@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from src.api import health, db_check, events, sync
+from src.api import health, db_check, events, sync, seats, tickets
 from src.database import engine
 from src.models import Base
 import logging
@@ -28,3 +28,5 @@ app.include_router(health.router)
 app.include_router(db_check.router)
 app.include_router(events.router)
 app.include_router(sync.router)
+app.include_router(seats.router)
+app.include_router(tickets.router)

@@ -1,8 +1,8 @@
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional, List, Dict, Any 
-from src.models import Event, SyncMetadata
-from datetime import datetime
+from src.models import Event, SyncMetadata, Ticket
+from datetime import datetime, date
 
 
 class EventRepository:
@@ -39,7 +39,23 @@ class EventRepository:
 
 	async def delete_all(self) -> None:
 		await self.session.execute(Event.__table__.delete())
-		
+	
+
+	async def list_with_filters(
+		self,
+		date_from: Optional[date],
+		offset: int,
+		limit: int
+	) -> tuple[List[Event], int]:
+		query = select(Event)
+		if date_from:
+			start_datetime = datetime.combine(date_from, datetime.min.time())
+			query = query.where(Event.event_time >= start_datetime)
+		count_query = select(func.count()).select_from(query.subquery())
+		total = await self.session.scalar(count_query)
+		query = query.order_by(Event.event_time).offset(offset).limit(limit)
+		result = await self.session.execute(query)
+		return result.scalars().all(), total or 0	
 
 
 
@@ -60,3 +76,27 @@ class SyncMetadataRepository:
 		meta.last_sync_time = last_sync_time
 		meta.last_changed_at = last_changed_at
 		meta.status = status
+
+
+class TicketRepository:
+	def __init__(self, session: AsyncSession):
+		self.session = session 
+
+	async def create(self, ticket_id: str, event_id: str, first_name: str, last_name: str, email: str, seat: str):
+		ticket = Ticket(
+			id=ticket_id,
+			event_id=event_id,
+			first_name=first_name,
+			last_name=last_name,
+			email=email,
+			seat=seat,
+		)
+		self.session.add(ticket)
+
+	async def get(self, ticket_id: str) -> Optional[Ticket]:
+		return await self.session.get(Ticket, ticket_id)
+
+	async def delete(self, ticket_id: str):
+		ticket = await self.get(ticket_id)
+		if ticket:
+			await self.session.delete(ticket)

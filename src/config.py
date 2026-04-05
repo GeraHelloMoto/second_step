@@ -2,12 +2,19 @@ from pydantic_settings import BaseSettings
 from typing import Optional
 
 class Settings(BaseSettings):
-    postgres_username: str = "postgres"
-    postgres_password: str = "pass"
-    postgres_host: str = "localhost"
-    postgres_port: str = "5432"
-    postgres_database_name: str = "events"
+    
     database_url: Optional[str] = None
+    postgres_connection_string: Optional[str] = None
+    postgres_database_name: Optional[str] = None
+    postgres_host: Optional[str] = None
+    postgres_port: Optional[str] = None
+    postgres_username: Optional[str] = None
+    postgres_password: Optional[str] = None
+    provider_base_url: str = ""
+    provider_api_key: str = ""
+    sync_interval_hours: int = 24
+    cache_seats_ttl: int = 30
+    use_mock_provider: bool = False   
 
     class Config:
         env_file = ".env"
@@ -16,7 +23,11 @@ class Settings(BaseSettings):
     def get_database_url(self) -> str:
         if self.database_url:
             return self.database_url
-        return f"postgresql+asyncpg://{self.postgres_username}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_database_name}"
+        if self.postgres_connection_string:
+            return self.postgres_connection_string
+        if all([self.postgres_username, self.postgres_password, self.postgres_host, self.postgres_port, self.postgres_database_name]):
+            return f"postgresql+asyncpg://{self.postgres_username}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_database_name}"
+        raise ValueError("Cant make DATABASE_URL")
 
 settings = Settings()
 settings.database_url = settings.get_database_url()

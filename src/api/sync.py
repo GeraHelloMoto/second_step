@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 @router.post("/trigger")
 async def trigger_sync(db: AsyncSession = Depends(get_db)):
 	try:
-		client = EventsProviderClient(mock=True)
+		client = EventsProviderClient()
 		event_repo = EventRepository(db)
 		sync_repo = SyncMetadataRepository(db)
 		usecase = SyncEventsUsecase(client, event_repo, sync_repo)
