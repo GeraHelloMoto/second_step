@@ -25,18 +25,13 @@ class Settings(BaseSettings):
         if self.database_url:
             return self.database_url
         if self.postgres_connection_string:
-            return self.postgres_connection_string
-        if all(
-            [
-                self.postgres_username,
-                self.postgres_password,
-                self.postgres_host,
-                self.postgres_port,
-                self.postgres_database_name,
-            ]
-        ):
-            return f"postgresql+asyncpg://{self.postgres_username}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_database_name}"
-        raise ValueError("Cant make DATABASE_URL")
+
+            return self.postgres_connection_string.replace("+asyncpg", "")
+        if all([self.postgres_username, self.postgres_password, self.postgres_host, \
+        self.postgres_port, self.postgres_database_name]):
+
+            return f"postgresql://{self.postgres_username}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_database_name}"
+        raise ValueError("cant make DATABASE_URL")
 
 
 settings = Settings()
