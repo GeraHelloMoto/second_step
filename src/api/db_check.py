@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.database import get_db
 from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.database import get_db
 
 router = APIRouter()
+
 
 @router.get("/api/db-status")
 async def db_status(db: AsyncSession = Depends(get_db)):

@@ -1,11 +1,11 @@
+import logging
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
-from src.api import health, db_check, events, sync, seats, tickets
+
+from src.api import db_check, events, health, seats, sync, tickets
 from src.database import engine
 from src.models import Base
-import logging
-
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -22,6 +22,7 @@ async def lifespan(app: FastAPI):
         logger.warning("App will continue but DB features may not work!")
     yield
     await engine.dispose()
+
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(health.router)

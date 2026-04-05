@@ -1,6 +1,9 @@
 import asyncio
+
 import asyncpg
+
 from src.config import settings
+
 
 async def main():
     try:
@@ -12,6 +15,7 @@ async def main():
         await conn.close()
     except Exception as e:
         print(f"❌ Connection failed: {e}")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

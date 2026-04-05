@@ -1,9 +1,12 @@
-from sqlalchemy import String, DateTime, Integer, ForeignKey
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from datetime import datetime
+
+from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
 
 class Base(DeclarativeBase):
     pass
+
 
 class Event(Base):
     __tablename__ = "events"
@@ -23,12 +26,18 @@ class Event(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     status_changed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
+
 class SyncMetadata(Base):
     __tablename__ = "sync_metadata"
     id: Mapped[int] = mapped_column(primary_key=True)
-    last_sync_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
-    last_changed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_sync_time: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    last_changed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     status: Mapped[str] = mapped_column(String(20), default="pending")
+
 
 class Ticket(Base):
     __tablename__ = "tickets"
@@ -38,4 +47,6 @@ class Ticket(Base):
     last_name: Mapped[str] = mapped_column(String(100))
     email: Mapped[str] = mapped_column(String(255))
     seat: Mapped[str] = mapped_column(String(20))
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.now
+    )

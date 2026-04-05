@@ -1,13 +1,20 @@
 import logging
-from datetime import datetime, date
-from src.repositories import EventRepository, SyncMetadataRepository
-from src.provider_client import EventsProviderClient
+from datetime import date, datetime
+
 from src.paginator import EventsPaginator
+from src.provider_client import EventsProviderClient
+from src.repositories import EventRepository, SyncMetadataRepository
 
 logger = logging.getLogger(__name__)
 
+
 class SyncEventsUsecase:
-    def __init__(self, client: EventsProviderClient, event_repo: EventRepository, sync_repo: SyncMetadataRepository):
+    def __init__(
+        self,
+        client: EventsProviderClient,
+        event_repo: EventRepository,
+        sync_repo: SyncMetadataRepository,
+    ):
         self.client = client
         self.event_repo = event_repo
         self.sync_repo = sync_repo
@@ -30,7 +37,7 @@ class SyncEventsUsecase:
                 def parse_datetime(value):
                     if isinstance(value, datetime):
                         return value
-                    return datetime.fromisoformat(value.replace('Z', '+00:00'))
+                    return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
                 event_data = {
                     "id": ev["id"],
@@ -41,7 +48,9 @@ class SyncEventsUsecase:
                     "place_address": place["address"],
                     "seats_pattern": place["seats_pattern"],
                     "event_time": parse_datetime(ev["event_time"]),
-                    "registration_deadline": parse_datetime(ev["registration_deadline"]),
+                    "registration_deadline": parse_datetime(
+                        ev["registration_deadline"]
+                    ),
                     "status": ev["status"],
                     "number_of_visitors": ev["number_of_visitors"],
                     "changed_at": parse_datetime(ev["changed_at"]),
@@ -55,6 +64,8 @@ class SyncEventsUsecase:
                     max_changed_at = ts
 
         now = datetime.now()
-        last_changed = max_changed_at or (datetime.now() if meta is None else meta.last_changed_at)
+        last_changed = max_changed_at or (
+            datetime.now() if meta is None else meta.last_changed_at
+        )
         await self.sync_repo.update(now, last_changed, "success")
         logger.info("Sync finished")
