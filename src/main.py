@@ -33,6 +33,7 @@
 # app.include_router(tickets.router)
 
 from fastapi import FastAPI
+
 from src.api import health
 
 app = FastAPI()
