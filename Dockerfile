@@ -1,7 +1,7 @@
 FROM python:3.12-slim
 
 RUN addgroup --system --gid 1000 appuser && \
-    adduser --system --uid 1000 --ingroup appuser --home /home/appuser appuser
+    adduser --system --uid 1000 --ingroup appuser appuser
 
 WORKDIR /app
 
@@ -10,14 +10,17 @@ COPY src/ ./src/
 
 RUN pip install uv
 
-USER appuser
-ENV HOME=/home/appuser
-RUN mkdir -p /home/appuser/.cache/uv
+# Принудительно задаём кэш в /tmp (доступен для записи всем)
+ENV UV_CACHE_DIR=/tmp/uv-cache
+RUN mkdir -p /tmp/uv-cache && chmod 777 /tmp/uv-cache
+
+# Запускаем синхронизацию
 RUN uv sync --frozen --no-dev
 
-USER root
 RUN chown -R appuser:appuser /app
 
 USER appuser
+
 EXPOSE 8000
+
 CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
