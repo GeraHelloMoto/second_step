@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-
+# Создаём пользователя с домашней директорией
 RUN addgroup --system --gid 1000 appuser && \
     adduser --system --uid 1000 --ingroup appuser --home /home/appuser appuser
 
@@ -17,11 +17,14 @@ RUN chown -R appuser:appuser /app
 RUN pip install uv
 
 
+RUN mkdir -p /home/appuser/.cache/uv && chown -R appuser:appuser /home/appuser
+
+
 USER appuser
 
 
 ENV HOME=/home/appuser
-RUN mkdir -p $HOME/.cache/uv
+ENV UV_CACHE_DIR=/home/appuser/.cache/uv
 
 
 RUN uv sync --frozen --no-dev
