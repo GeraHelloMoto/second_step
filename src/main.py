@@ -1,33 +1,39 @@
-import logging
-from contextlib import asynccontextmanager
+# import logging
+# from contextlib import asynccontextmanager
+
+# from fastapi import FastAPI
+
+# from src.api import db_check, events, health, seats, sync, tickets
+# from src.database import engine
+# from src.models import Base
+
+# logging.basicConfig(level=logging.INFO)
+# logger = logging.getLogger(__name__)
+
+
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     try:
+#         async with engine.begin() as conn:
+#             await conn.run_sync(Base.metadata.create_all)
+#         logger.info("Database tables created!😎")
+#     except Exception as e:
+#         logger.error(f"Failed to create database tables!😥 {e}")
+#         logger.warning("App will continue but DB features may not work!")
+#     yield
+#     await engine.dispose()
+
+
+# app = FastAPI(lifespan=lifespan)
+# app.include_router(health.router)
+# app.include_router(db_check.router)
+# app.include_router(events.router)
+# app.include_router(sync.router)
+# app.include_router(seats.router)
+# app.include_router(tickets.router)
 
 from fastapi import FastAPI
+from src.api import health
 
-from src.api import db_check, events, health, seats, sync, tickets
-from src.database import engine
-from src.models import Base
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    try:
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        logger.info("Database tables created!😎")
-    except Exception as e:
-        logger.error(f"Failed to create database tables!😥 {e}")
-        logger.warning("App will continue but DB features may not work!")
-    yield
-    await engine.dispose()
-
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 app.include_router(health.router)
-app.include_router(db_check.router)
-app.include_router(events.router)
-app.include_router(sync.router)
-app.include_router(seats.router)
-app.include_router(tickets.router)
