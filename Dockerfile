@@ -5,19 +5,10 @@ RUN addgroup --system --gid 1000 appuser && \
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
+COPY requirements.txt .
 COPY src/ ./src/
 
-RUN pip install uv
-
-
-ENV HOME=/root
-ENV UV_CACHE_DIR=/root/.cache/uv
-RUN mkdir -p /root/.cache/uv && chmod 755 /root/.cache/uv
-
-
-ENV UV_NO_CACHE=1
-RUN uv sync --frozen --no-dev
+RUN pip install --no-cache-dir -r requirements.txt
 
 RUN chown -R appuser:appuser /app
 
@@ -25,4 +16,4 @@ USER appuser
 
 EXPOSE 8000
 
-CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
