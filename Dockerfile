@@ -5,17 +5,10 @@ RUN addgroup --system --gid 1000 appuser && \
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
+COPY requirements.txt .
 COPY src/ ./src/
 
-RUN pip install uv
-
-# Принудительно задаём кэш в /tmp (доступен для записи всем)
-ENV UV_CACHE_DIR=/tmp/uv-cache
-RUN mkdir -p /tmp/uv-cache && chmod 777 /tmp/uv-cache
-
-# Запускаем синхронизацию
-RUN uv sync --frozen --no-dev
+RUN pip install --no-cache-dir -r requirements.txt
 
 RUN chown -R appuser:appuser /app
 
@@ -23,4 +16,4 @@ USER appuser
 
 EXPOSE 8000
 
-CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
