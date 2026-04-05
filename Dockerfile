@@ -11,9 +11,7 @@ COPY src/ ./src/
 RUN pip install uv
 
 
-ENV HOME=/root
-RUN mkdir -p /root/.cache/uv
-RUN uv sync --frozen --no-dev --cache-dir /root/.cache/uv
+RUN uv sync --frozen --no-dev --cache-dir /tmp/uv-cache
 
 RUN chown -R appuser:appuser /app
 
