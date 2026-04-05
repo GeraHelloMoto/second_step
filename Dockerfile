@@ -16,6 +16,7 @@ ENV UV_CACHE_DIR=/root/.cache/uv
 RUN mkdir -p /root/.cache/uv && chmod 755 /root/.cache/uv
 
 
+ENV UV_NO_CACHE=1
 RUN uv sync --frozen --no-dev
 
 RUN chown -R appuser:appuser /app
