@@ -27,7 +27,7 @@ async def create_ticket(req: TicketCreateRequest, db: AsyncSession = Depends(get
     if now > event.registration_deadline:
         raise HTTPException(status_code=400, detail="Registration deadline has passed")
 
-    client = EventsProviderClient(mock=True)
+    client = EventsProviderClient()
     try:
         ticket_id = await client.register(
             req.event_id, req.first_name, req.last_name, req.email, req.seat
