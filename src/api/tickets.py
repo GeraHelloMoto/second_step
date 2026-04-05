@@ -10,19 +10,19 @@ from src.schemas import SuccessResponse, TicketCreateRequest, TicketResponse
 
 router = APIRouter(prefix="/api/tickets", tags=["tickets"])
 
-
 @router.post("", status_code=201)
-async def create_ticket(req: TicketCreateRequest, db: AsyncSession = Depends(get_db)):
-
+async def create_ticket(
+    req: TicketCreateRequest,
+    db: AsyncSession = Depends(get_db)
+):
     event_repo = EventRepository(db)
     event = await event_repo.get_by_id(req.event_id)
     if not event:
-        raise HTTPException(status_code=404, detail="Event not found")
-    if event.status != "published":
-        raise HTTPException(
-            status_code=400, detail="Registration is not available for this event"
-        )
 
+        raise HTTPException(status_code=400, detail="Event not found")
+    if event.status != "published":
+        raise HTTPException(status_code=400, detail="Registration is \
+         not available for this event")
     now = datetime.now(event.event_time.tzinfo)
     if now > event.registration_deadline:
         raise HTTPException(status_code=400, detail="Registration deadline has passed")
@@ -41,7 +41,6 @@ async def create_ticket(req: TicketCreateRequest, db: AsyncSession = Depends(get
     )
     await db.commit()
     return TicketResponse(ticket_id=ticket_id)
-
 
 @router.delete("/{ticket_id}")
 async def cancel_ticket(ticket_id: str, db: AsyncSession = Depends(get_db)):

@@ -18,15 +18,8 @@ class EventRepository:
         return event
 
     async def upsert(self, event_data: Dict[str, Any]) -> None:
-        stmt = select(Event).where(Event.id == event_data["id"])
-        result = await self.session.execute(stmt)
-        existing = result.scalar_one_or_none()
-        if existing:
-            for key, value in event_data.items():
-                setattr(existing, key, value)
-        else:
-            new_event = Event(**event_data)
-            self.session.add(new_event)
+        event = Event(**event_data)
+        await self.session.merge(event)
 
     async def get_by_id(self, event_id: str) -> Optional[Event]:
         return await self.session.get(Event, event_id)
