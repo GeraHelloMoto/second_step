@@ -1,24 +1,21 @@
 FROM python:3.12-slim
 
-
 RUN addgroup --system --gid 1000 appuser && \
     adduser --system --uid 1000 --ingroup appuser appuser
 
 WORKDIR /app
 
-
 COPY pyproject.toml uv.lock ./
 COPY src/ ./src/
-
 
 RUN pip install uv
 
 
-RUN uv sync --frozen --no-dev
-
+ENV HOME=/root
+RUN mkdir -p /root/.cache/uv
+RUN uv sync --frozen --no-dev --cache-dir /root/.cache/uv
 
 RUN chown -R appuser:appuser /app
-
 
 USER appuser
 
