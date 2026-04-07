@@ -9,3 +9,5 @@ __pycache__
 tests
 check_db.py
 README.md
+.idea
+.vscode

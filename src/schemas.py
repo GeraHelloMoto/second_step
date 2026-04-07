@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -9,7 +8,7 @@ class PlaceSchema(BaseModel):
     name: str
     city: str
     address: str
-    seats_pattern: Optional[str] = None
+    seats_pattern: str | None = None
 
 
 class EventResponse(BaseModel):
@@ -24,9 +23,9 @@ class EventResponse(BaseModel):
 
 class EventListResponse(BaseModel):
     count: int
-    next: Optional[str] = None
-    previous: Optional[str] = None
-    results: List[EventResponse]
+    next: str | None = None
+    previous: str | None = None
+    results: list[EventResponse]
 
 
 class TicketCreateRequest(BaseModel):

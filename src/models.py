@@ -7,7 +7,6 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 class Base(DeclarativeBase):
     pass
 
-
 class Event(Base):
     __tablename__ = "events"
 
@@ -26,18 +25,18 @@ class Event(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     status_changed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
-
 class SyncMetadata(Base):
     __tablename__ = "sync_metadata"
     id: Mapped[int] = mapped_column(primary_key=True)
     last_sync_time: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=True
+        DateTime(timezone=True),
+        nullable=True
     )
     last_changed_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=True
+        DateTime(timezone=True),
+        nullable=True
     )
     status: Mapped[str] = mapped_column(String(20), default="pending")
-
 
 class Ticket(Base):
     __tablename__ = "tickets"
@@ -48,5 +47,6 @@ class Ticket(Base):
     email: Mapped[str] = mapped_column(String(255))
     seat: Mapped[str] = mapped_column(String(20))
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=datetime.now
+        DateTime(timezone=True),
+        default=datetime.now
     )

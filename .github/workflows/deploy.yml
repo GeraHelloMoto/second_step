@@ -26,9 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write               # <--- добавляем права на запись в GHCR
+      packages: write
     outputs:
-      image: ${{ steps.meta.outputs.tags }}
       repo: ${{ steps.repo.outputs.repo }}
 
     steps:
