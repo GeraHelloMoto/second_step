@@ -28,14 +28,14 @@ class Settings(BaseSettings):
 
             return self.postgres_connection_string.replace(
                 "postgres://",
-                "postgresql://", 1)
+                "postgresql+asyncpg://", 1)
         if all([self.postgres_username,
             self.postgres_password,
             self.postgres_host,
             self.postgres_port,
             self.postgres_database_name]
         ):
-            return f"postgresql://{self.postgres_username}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_database_name}"
+            return f"postgresql+asyncpg://{self.postgres_username}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_database_name}"
         raise ValueError("Cant make DATABASE_URL")
 
 settings = Settings()
